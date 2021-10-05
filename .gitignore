@@ -1,3 +1,5 @@
 
 cifar-10-python.tar.gz
-.ipynb_checkpoints/Testnotebook-checkpoint.ipynb
+.ipynb_checkpoints/*
+*.gz
+data/*
