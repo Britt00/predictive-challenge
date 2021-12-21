@@ -26,8 +26,9 @@ def build_model(input_shape, nr_of_classes):
     """ Output layers """
     s1 = vgg19.get_layer("block5_pool").output         ## last layer output data    
     outputs = Flatten()(s1)
-    #outputs = Dense(49)(outputs)                      # <-- maybe add this layer later, after proof of concept
-    outputs = Dense(nr_of_classes)(outputs)
+    #outputs = Dense(4096, activation="relu")(outputs)                      # <-- maybe add this layer later, after proof of concept
+    #outputs = Dense(4096, activation="relu")(outputs)
+    outputs = Dense(nr_of_classes, activation="softmax")(outputs)
 
     model = Model(inputs, outputs, name="Classifier")
     return model

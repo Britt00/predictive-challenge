@@ -12,7 +12,8 @@ from pycocotools.coco import COCO
 import numpy as np
 from itertools import repeat
 import random
-#import os
+import skimage.io as io
+import os
 import cv2
 
 #for augmentations
@@ -69,7 +70,18 @@ def filterDataset(folder, classes=None, mode='train'):
     
     return list(unique_images), list(true_labels), dataset_size, coco
 
-def dataGeneratorCoco(images, labels, coco, folder, 
+def getImage(imageObj, img_folder, input_image_size):
+    # Read and normalize an image
+    train_img = io.imread(img_folder + '/' + imageObj['file_name'])/255.0
+    # Resize
+    train_img = cv2.resize(train_img, input_image_size)
+    if (len(train_img.shape)==3 and train_img.shape[2]==3): # If it is a RGB 3 channel image
+        return train_img
+    else: # To handle a black and white image, increase dimensions to 3
+        stacked_img = np.stack((train_img,)*3, axis=-1)
+        return stacked_img
+
+def dataGeneratorCoco(images, labels, classes, coco, folder, 
                       input_image_size=(224,224), batch_size=4, mode='train'):
     
     img_folder = '{}/images/{}'.format(folder, mode)
