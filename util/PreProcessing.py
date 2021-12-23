@@ -37,6 +37,14 @@ def filterDataset(folder, classes=None, mode='train'):
     
     images = []
     labels = []
+    # balancing the classes
+#     lowestnr = 1000000;
+#     for className in classes:
+#         catIds = coco.getCatIds(catNms=className)
+#         imgIds = coco.getImgIds(catIds=catIds)
+#         lowestnr = min(lowestnr, len(imgIds))
+#         print(f"class {className} has {len(imgIds)} entrees. current lowest is {lowestnr}.")
+    
     if classes!=None:
         # iterate for each individual class in the list
         for idc, className in enumerate(classes):
@@ -54,21 +62,48 @@ def filterDataset(folder, classes=None, mode='train'):
         imgIds = coco.getImgIds()
         images = coco.loadImgs(imgIds)
         labels = [0]*len(images)
+        
+    # TODO: Add class balancing?
     
-    # Now, filter out the repeated images
-    unique_images = []
+    # Now, filter out the repeated images, and the ones with more than once class
+    unique_images = [[]]
     true_labels = []
+    bad_images = []
     for i in range(len(images)):
-        if images[i] not in unique_images:
+        if images[i] in bad_images:
+            pass
+        elif images[i] not in unique_images:
             unique_images.append(images[i])
             true_labels.append(labels[i])
+        else:
+            index = unique_images.index(images[i])
+            del unique_images[index]
+            del true_labels[index]
+            bad_images.append(images[i])
+            
+    histogram = np.zeros(len(classes), dtype='int')
+    for label in true_labels:
+        histogram[np.argmax(label)] += 1
+    low = min(histogram)
+    print(histogram, low)
+        
+    final_images = []
+    final_labels = []
+    c = 0
+    for h in histogram:
+        possibleImgs = unique_images[c:c+h]
+        random.shuffle(possibleImgs)
+        final_images.extend(possibleImgs[:low])
+        final_labels.extend(true_labels[c:c+low])
+        c += h
     
     ### shuffle ###
-    unique_images, true_labels = zippedshuffle(unique_images, true_labels)
+    final_images, final_labels = zippedshuffle(final_images, final_labels)
+    #unique_images, true_labels = zippedshuffle(unique_images, true_labels)
     
-    dataset_size = len(unique_images)
+    dataset_size = len(final_images)
     
-    return list(unique_images), list(true_labels), dataset_size, coco
+    return list(final_images), list(final_labels), dataset_size, coco
 
 def getImage(imageObj, img_folder, input_image_size):
     # Read and normalize an image
