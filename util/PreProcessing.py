@@ -58,13 +58,15 @@ def filterDataset(folder, classes=None, mode='train'):
 #             classlabel[idc] = 1
 #             labels.extend(repeat(classlabel, len(imgIds)))
             labels.extend(repeat(className, len(imgIds)))
-            print(len(labels), len(images)
-    
+   
     else:
         imgIds = coco.getImgIds()
         images = coco.loadImgs(imgIds)
         labels = [0]*len(images)
-        
+
+    print(labels)
+    print(len(labels), len(images)) 
+    return              
     # TODO: Add class balancing?
     
     # Now, filter out the repeated images, and the ones with more than once class
