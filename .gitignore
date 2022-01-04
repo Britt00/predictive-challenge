@@ -3,3 +3,5 @@ cifar-10-python.tar.gz
 .ipynb_checkpoints/*
 *.gz
 data/*
+models/VGG19-Imagenet-21122021/variables/variables.data-00000-of-00001
+models/VGG19-Imagenet-23122021/variables/variables.data-00000-of-00001
