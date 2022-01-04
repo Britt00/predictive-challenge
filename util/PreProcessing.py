@@ -63,10 +63,7 @@ def filterDataset(folder, classes=None, mode='train'):
         imgIds = coco.getImgIds()
         images = coco.loadImgs(imgIds)
         labels = [0]*len(images)
-
-    print(labels)
-    print(len(labels), len(images)) 
-    return              
+    
     # TODO: Add class balancing?
     
     # Now, filter out the repeated images, and the ones with more than once class
@@ -87,7 +84,8 @@ def filterDataset(folder, classes=None, mode='train'):
             
     histogram = np.zeros(len(classes), dtype='int')
     for label in true_labels:
-        histogram[np.argmax(label)] += 1
+        classindex = classes.index(label)
+        histogram[classindex] += 1
     low = min(histogram)
     print(histogram, low)
         
