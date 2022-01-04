@@ -54,9 +54,11 @@ def filterDataset(folder, classes=None, mode='train'):
             images += coco.loadImgs(imgIds)
             
             ### one hot encoding labeling ###
-            classlabel = np.zeros(len(classes)).tolist()
-            classlabel[idc] = 1
-            labels.extend(repeat(classlabel, len(imgIds)))
+#             classlabel = np.zeros(len(classes)).tolist()
+#             classlabel[idc] = 1
+#             labels.extend(repeat(classlabel, len(imgIds)))
+            labels.extend(repeat(className, len(imgIds)))
+            print(len(labels), len(images)
     
     else:
         imgIds = coco.getImgIds()
